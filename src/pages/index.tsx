@@ -1,17 +1,30 @@
 import {
   AppBar,
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Stack,
   Typography,
-} from '@mui/material';
-import Head from 'next/head';
+} from "@mui/material";
+import Head from "next/head";
+import { useCallback, useState } from "react";
 
-const TITLE = 'Global Wall';
+const TITLE = "Global Wall";
+const CONTENT_MAX_WIDTH = 380;
 
 export default function Home() {
+  const [shouldDisplayAddPostModal, setShouldDisplayAddPostModal] =
+    useState(false);
+
+  const toggleModalDisplay = useCallback(() => {
+    setShouldDisplayAddPostModal((prev) => !prev);
+  }, []);
+
   return (
     <>
       <Head>
@@ -30,11 +43,24 @@ export default function Home() {
       </AppBar>
 
       <main>
+        <Dialog open={shouldDisplayAddPostModal} onClose={toggleModalDisplay}>
+          <DialogTitle>Add new post</DialogTitle>
+          <DialogContent>{/* Add content here */}</DialogContent>
+        </Dialog>
+
         <Stack alignItems="center" py={2} spacing={2}>
+          <Button
+            fullWidth
+            sx={{ maxWidth: CONTENT_MAX_WIDTH }}
+            variant="contained"
+            onClick={toggleModalDisplay}
+          >
+            Add new post
+          </Button>
           {new Array(10).fill(null).map((_, index) => (
             <Card
               key={`post_${index}`}
-              sx={{ minWidth: 320, maxWidth: 380, width: '100%' }}
+              sx={{ minWidth: 320, maxWidth: CONTENT_MAX_WIDTH, width: "100%" }}
             >
               <CardMedia
                 sx={{ height: 140 }}
