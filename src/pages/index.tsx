@@ -8,18 +8,61 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Input,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import Head from "next/head";
-import { useCallback, useState } from "react";
+import { useCallback, useReducer, useState } from "react";
+
+interface NewPostFormData {
+  title: string;
+  content: string;
+  image: string | null;
+}
+
+interface NewPostUpdateFieldAction {
+  type: "change_field";
+  payload: {
+    name: keyof NewPostFormData;
+    value: string;
+  };
+}
+
+type NewPostFormActions = NewPostUpdateFieldAction;
 
 const TITLE = "Global Wall";
 const CONTENT_MAX_WIDTH = 380;
 
+const newPostDefaultData: NewPostFormData = {
+  title: "",
+  content: "",
+  image: null,
+};
+
+const newPostReducer = (
+  state: NewPostFormData,
+  action: NewPostFormActions
+): NewPostFormData => {
+  switch (action.type) {
+    case "change_field": {
+      const { name, value } = action.payload;
+      return {
+        ...state,
+        [name]: value,
+      };
+    }
+  }
+};
+
 export default function Home() {
   const [shouldDisplayAddPostModal, setShouldDisplayAddPostModal] =
     useState(false);
+  const [newPostFormData, newPostFormDispatch] = useReducer(
+    newPostReducer,
+    newPostDefaultData
+  );
 
   const toggleModalDisplay = useCallback(() => {
     setShouldDisplayAddPostModal((prev) => !prev);
@@ -43,9 +86,50 @@ export default function Home() {
       </AppBar>
 
       <main>
-        <Dialog open={shouldDisplayAddPostModal} onClose={toggleModalDisplay}>
-          <DialogTitle>Add new post</DialogTitle>
-          <DialogContent>{/* Add content here */}</DialogContent>
+        <Dialog
+          fullWidth
+          maxWidth="md"
+          open={shouldDisplayAddPostModal}
+          onClose={toggleModalDisplay}
+        >
+          <DialogTitle>
+            Add new post
+            {/* <IconButton onClick={toggleModalDisplay}>
+              add icon here
+            </IconButton> */}
+          </DialogTitle>
+          <DialogContent>
+            <Stack py={1} spacing={2}>
+              <TextField
+                label="Title"
+                value={newPostFormData.title}
+                onChange={({ target }) =>
+                  newPostFormDispatch({
+                    type: "change_field",
+                    payload: { name: "title", value: target.value },
+                  })
+                }
+              />
+              <TextField
+                label="Content"
+                multiline
+                placeholder="Did you know this is a multiline input?"
+                maxRows={8}
+                value={newPostFormData.content}
+                onChange={({ target }) =>
+                  newPostFormDispatch({
+                    type: "change_field",
+                    payload: { name: "content", value: target.value },
+                  })
+                }
+              />
+              <Input type="file" />
+              <Stack>
+                <Button variant="contained">Submit</Button>
+                <Button variant="outlined">Cancel</Button>
+              </Stack>
+            </Stack>
+          </DialogContent>
         </Dialog>
 
         <Stack alignItems="center" py={2} spacing={2}>
