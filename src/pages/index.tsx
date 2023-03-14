@@ -124,7 +124,7 @@ export default function Home() {
                 }
               />
               <Input type="file" />
-              <Stack>
+              <Stack flexDirection="row" gap={1} justifyContent="end">
                 <Button variant="contained">Submit</Button>
                 <Button variant="outlined">Cancel</Button>
               </Stack>
