@@ -14,23 +14,37 @@ import {
   Typography,
 } from "@mui/material";
 import Head from "next/head";
-import { useCallback, useReducer, useState } from "react";
+import { ChangeEventHandler, useCallback, useReducer, useState } from "react";
 
 interface NewPostFormData {
   title: string;
   content: string;
   image: string | null;
+  isImageLoading: boolean;
 }
 
-interface NewPostUpdateFieldAction {
-  type: "change_field";
+interface NewPostUpdateTextFieldAction {
+  type: "change_text_field";
   payload: {
-    name: keyof NewPostFormData;
+    name: Exclude<keyof NewPostFormData, "image">;
     value: string;
   };
 }
 
-type NewPostFormActions = NewPostUpdateFieldAction;
+interface NewPostUpdateFileFieldAction {
+  type: "change_file_field";
+  payload: string | null;
+}
+
+interface NewPostUpdateFileLoadingAction {
+  type: "change_file_loading";
+  payload: boolean;
+}
+
+type NewPostFormActions =
+  | NewPostUpdateTextFieldAction
+  | NewPostUpdateFileFieldAction
+  | NewPostUpdateFileLoadingAction;
 
 const TITLE = "Global Wall";
 const CONTENT_MAX_WIDTH = 380;
@@ -39,6 +53,7 @@ const newPostDefaultData: NewPostFormData = {
   title: "",
   content: "",
   image: null,
+  isImageLoading: false,
 };
 
 const newPostReducer = (
@@ -46,13 +61,27 @@ const newPostReducer = (
   action: NewPostFormActions
 ): NewPostFormData => {
   switch (action.type) {
-    case "change_field": {
+    case "change_text_field": {
       const { name, value } = action.payload;
       return {
         ...state,
         [name]: value,
       };
     }
+    case "change_file_field": {
+      return {
+        ...state,
+        image: action.payload,
+      };
+    }
+    case "change_file_loading": {
+      return {
+        ...state,
+        isImageLoading: action.payload,
+      };
+    }
+    default:
+      return state;
   }
 };
 
@@ -67,6 +96,37 @@ export default function Home() {
   const toggleModalDisplay = useCallback(() => {
     setShouldDisplayAddPostModal((prev) => !prev);
   }, []);
+
+  const fileChangeHandler = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    ({ target }) => {
+      if (target.files && target.files.length > 0) {
+        newPostFormDispatch({ type: "change_file_loading", payload: true });
+        const fileReader = new FileReader();
+        fileReader.onload = (data) => {
+          // FIXME: make it look better
+          if (data.target) {
+            newPostFormDispatch({
+              type: "change_file_field",
+              payload: String(data.target.result),
+            });
+            newPostFormDispatch({
+              type: "change_file_loading",
+              payload: false,
+            });
+          } else alert("Some error occured");
+        };
+        fileReader.readAsDataURL(target.files[0]);
+      }
+    },
+    []
+  );
+
+  console.log(newPostFormData.isImageLoading, "newPostFormData.isImageLoading");
+
+  const isNewPostReadyToBeSent =
+    newPostFormData.content.length > 0 &&
+    newPostFormData.title.length > 0 &&
+    !newPostFormData.isImageLoading;
 
   return (
     <>
@@ -105,7 +165,7 @@ export default function Home() {
                 value={newPostFormData.title}
                 onChange={({ target }) =>
                   newPostFormDispatch({
-                    type: "change_field",
+                    type: "change_text_field",
                     payload: { name: "title", value: target.value },
                   })
                 }
@@ -118,14 +178,20 @@ export default function Home() {
                 value={newPostFormData.content}
                 onChange={({ target }) =>
                   newPostFormDispatch({
-                    type: "change_field",
+                    type: "change_text_field",
                     payload: { name: "content", value: target.value },
                   })
                 }
               />
-              <Input type="file" />
+              <Input
+                type="file"
+                inputProps={{ accept: "image/*" }}
+                onChange={fileChangeHandler}
+              />
               <Stack flexDirection="row" gap={1} justifyContent="end">
-                <Button variant="contained">Submit</Button>
+                <Button disabled={!isNewPostReadyToBeSent} variant="contained">
+                  Submit
+                </Button>
                 <Button variant="outlined">Cancel</Button>
               </Stack>
             </Stack>
