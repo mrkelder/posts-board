@@ -8,6 +8,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Fade,
   Input,
   Stack,
   TextField,
@@ -121,12 +122,10 @@ export default function Home() {
     []
   );
 
-  console.log(newPostFormData.isImageLoading, "newPostFormData.isImageLoading");
+  const { content, isImageLoading, title } = newPostFormData;
 
   const isNewPostReadyToBeSent =
-    newPostFormData.content.length > 0 &&
-    newPostFormData.title.length > 0 &&
-    !newPostFormData.isImageLoading;
+    content.length > 0 && title.length > 0 && !isImageLoading;
 
   return (
     <>
@@ -162,7 +161,7 @@ export default function Home() {
             <Stack py={1} spacing={2}>
               <TextField
                 label="Title"
-                value={newPostFormData.title}
+                value={title}
                 onChange={({ target }) =>
                   newPostFormDispatch({
                     type: "change_text_field",
@@ -175,7 +174,7 @@ export default function Home() {
                 multiline
                 placeholder="Did you know this is a multiline input?"
                 maxRows={8}
-                value={newPostFormData.content}
+                value={content}
                 onChange={({ target }) =>
                   newPostFormDispatch({
                     type: "change_text_field",
@@ -185,9 +184,13 @@ export default function Home() {
               />
               <Input
                 type="file"
+                disabled={isImageLoading}
                 inputProps={{ accept: "image/*" }}
                 onChange={fileChangeHandler}
               />
+              <Fade in={isImageLoading}>
+                <Typography>Post image is being loaded, please wait</Typography>
+              </Fade>
               <Stack flexDirection="row" gap={1} justifyContent="end">
                 <Button disabled={!isNewPostReadyToBeSent} variant="contained">
                   Submit
