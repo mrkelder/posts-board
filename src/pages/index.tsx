@@ -195,7 +195,9 @@ export default function Home() {
                 <Button disabled={!isNewPostReadyToBeSent} variant="contained">
                   Submit
                 </Button>
-                <Button variant="outlined">Cancel</Button>
+                <Button variant="outlined" onClick={toggleModalDisplay}>
+                  Cancel
+                </Button>
               </Stack>
             </Stack>
           </DialogContent>
