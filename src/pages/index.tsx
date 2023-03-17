@@ -122,10 +122,10 @@ export default function Home() {
     []
   );
 
-  const { content, isImageLoading, title } = newPostFormData;
+  const { content, isImageLoading, title, image } = newPostFormData;
 
   const isNewPostReadyToBeSent =
-    content.length > 0 && title.length > 0 && !isImageLoading;
+    content.length > 0 && title.length > 0 && image && !isImageLoading;
 
   return (
     <>
@@ -154,7 +154,7 @@ export default function Home() {
           <DialogTitle>
             Add new post
             {/* <IconButton onClick={toggleModalDisplay}>
-              add icon here
+              TODO: add icon here
             </IconButton> */}
           </DialogTitle>
           <DialogContent>
