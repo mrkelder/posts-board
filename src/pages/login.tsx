@@ -19,7 +19,7 @@ export default function Login() {
               {TITLE}
             </Typography>
             <TextField label="Username" />
-            <TextField label="Password" />
+            <TextField type="password" label="Password" />
             <Button variant="contained">Login</Button>
             <Link href="/signup">{"Don't have an account yet?"}</Link>
           </Stack>
