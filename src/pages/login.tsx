@@ -1,6 +1,7 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import Head from "next/head";
+import Link from "next/link";
 
 const TITLE = "Login";
 
@@ -20,6 +21,7 @@ export default function Login() {
             <TextField label="Username" />
             <TextField label="Password" />
             <Button variant="contained">Login</Button>
+            <Link href="/signup">{"Don't have an account yet?"}</Link>
           </Stack>
         </Paper>
       </Stack>
