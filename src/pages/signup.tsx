@@ -20,7 +20,7 @@ export default function Signup() {
             </Typography>
             <TextField label="Username" />
             <TextField label="Password" />
-            <Button variant="contained">Login</Button>
+            <Button variant="contained">Sign Up</Button>
             <Link href="/login">Already have an account?</Link>
           </Stack>
         </Paper>
