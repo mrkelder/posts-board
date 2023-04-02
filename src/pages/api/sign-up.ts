@@ -1,13 +1,9 @@
 import { env } from "@/lib/env";
-import {
-  CognitoIdentityProvider,
-  AdminCreateUserCommandOutput,
-} from "@aws-sdk/client-cognito-identity-provider";
+import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
   message: string;
-  data?: AdminCreateUserCommandOutput;
 };
 
 export default async function handler(
@@ -36,13 +32,13 @@ export default async function handler(
         },
       });
 
-      const result = await client.adminCreateUser({
+      await client.adminCreateUser({
         Username: login,
         TemporaryPassword: password,
         UserPoolId: env.cognito_user_pool_id,
       });
 
-      res.status(200).json({ message: "Ok", data: result });
+      res.send({ message: "Account created successfully" });
     } else
       res
         .status(403)
