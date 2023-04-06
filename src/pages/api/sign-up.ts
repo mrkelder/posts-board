@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    const { login, password } = req.body;
+    const { email, password } = req.body;
 
     if (req.method?.toLocaleLowerCase() !== "post") {
       res.status(405).json({ message: "This route accepts POST method" });
@@ -19,9 +19,9 @@ export default async function handler(
     }
 
     if (
-      login &&
+      email &&
       password &&
-      typeof login === "string" &&
+      typeof email === "string" &&
       typeof password === "string"
     ) {
       const client = new CognitoIdentityProvider({
@@ -32,10 +32,16 @@ export default async function handler(
         },
       });
 
-      await client.adminCreateUser({
-        Username: login,
-        TemporaryPassword: password,
-        UserPoolId: env.cognito_user_pool_id,
+      await client.signUp({
+        Username: email,
+        Password: password,
+        ClientId: env.congito_client_id,
+        UserAttributes: [
+          {
+            Name: "email",
+            Value: email,
+          },
+        ],
       });
 
       res.send({ message: "Account created successfully" });

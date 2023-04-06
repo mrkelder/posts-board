@@ -1,7 +1,7 @@
 import { env } from "@/lib/env";
 
 interface Arguments {
-  login: string;
+  email: string;
   password: string;
 }
 
@@ -11,13 +11,13 @@ interface ReturnData {
 }
 
 export const signUp = async ({
-  login,
+  email,
   password,
 }: Arguments): Promise<ReturnData> => {
   try {
     const response = await fetch(`${env.hostname}/api/sign-up`, {
       method: "POST",
-      body: JSON.stringify({ login, password }),
+      body: JSON.stringify({ email, password }),
       headers: {
         "Content-Type": "application/json",
       },

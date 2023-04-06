@@ -9,7 +9,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 const TITLE = "Signup";
 
 export default function Signup() {
-  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [responseError, setResponseError] = useState<null | string>(null);
   const router = useRouter();
@@ -22,9 +22,9 @@ export default function Signup() {
     };
 
   const submitSignUp = async () => {
-    const { ok, message } = await signUp({ login, password });
+    const { ok, message } = await signUp({ email, password });
 
-    if (ok) router.push("/login");
+    if (ok) router.push("/email");
     else setResponseError(message);
   };
 
@@ -41,10 +41,10 @@ export default function Signup() {
               {TITLE}
             </Typography>
             <TextField
-              onChange={inputChangeHandler(setLogin)}
-              value={login}
-              label="Username"
-              name="login"
+              onChange={inputChangeHandler(setEmail)}
+              value={email}
+              label="Email"
+              name="email"
             />
             <TextField
               onChange={inputChangeHandler(setPassword)}
@@ -59,7 +59,7 @@ export default function Signup() {
             <Typography color="red" display={responseError ? "inline" : "none"}>
               {responseError}
             </Typography>
-            <Link href="/login">Already have an account?</Link>
+            <Link href="/email">Already have an account?</Link>
           </Stack>
         </Paper>
       </Stack>
