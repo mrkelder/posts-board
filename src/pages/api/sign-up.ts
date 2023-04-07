@@ -46,7 +46,6 @@ async function getError({
   error,
 }: GetErrorArguments): Promise<GetErrorReturnType> {
   try {
-    console.log(error.message);
     if (error.message === SignUpErrors.InvalidPassowrd)
       return { message: SignUpErrors.InvalidPassowrd, status: 403 };
     else if (error.message === SignUpErrors.UserExists)
