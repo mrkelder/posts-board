@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^4.3.8",
+    "@aws-sdk/client-cognito-identity-provider": "^3.303.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.9",
